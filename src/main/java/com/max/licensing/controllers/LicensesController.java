@@ -1,8 +1,10 @@
 package com.max.licensing.controllers;
 
 
+import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,16 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "v1/organizations/{organizationId}/licenses")
 public class LicensesController {
 
+    private static final Logger LOG = Logger.getLogger(LicensesController.class);
+
     private final LicenseService licenseService;
 
+    private final LicenseServiceConfig config;
+
     @Autowired
-    public LicensesController(LicenseService licenseService) {
+    public LicensesController(LicenseServiceConfig config, LicenseService licenseService) {
+        this.config = config;
         this.licenseService = licenseService;
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.GET)
     public License getLicenseById(@PathVariable("organizationId") long organizationId,
                                   @PathVariable("licenseId") long licenseId) {
+
+        LOG.info("example.property: " + config.getExampleProperty());
 
         return licenseService.getByIds(organizationId, licenseId);
     }
