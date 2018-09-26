@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:8-jdk-alpine
 MAINTAINER Maksym Stepanenko <stepanenkomaksi@gmail.com>
 RUN  apk update && apk upgrade && apk add netcat-openbsd && apk add bash
 RUN mkdir -p /usr/local/licensing-service
