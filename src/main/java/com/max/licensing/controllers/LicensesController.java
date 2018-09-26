@@ -32,9 +32,6 @@ public class LicensesController {
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.GET)
     public License getLicenseById(@PathVariable("organizationId") long organizationId,
                                   @PathVariable("licenseId") long licenseId) {
-
-        LOG.info("example.property: " + config.getExampleProperty());
-
         License singleLicense = licenseService.getByIds(organizationId, licenseId);
         singleLicense.setDescription(config.getExampleProperty());
 
