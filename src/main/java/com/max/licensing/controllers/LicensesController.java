@@ -35,7 +35,10 @@ public class LicensesController {
 
         LOG.info("example.property: " + config.getExampleProperty());
 
-        return licenseService.getByIds(organizationId, licenseId);
+        License singleLicense = licenseService.getByIds(organizationId, licenseId);
+        singleLicense.setDescription(config.getExampleProperty());
+
+        return singleLicense;
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.POST)

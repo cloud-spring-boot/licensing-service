@@ -6,6 +6,7 @@ public class License {
     private final long organizationId;
     private String productName;
     private String licenseType;
+    private String description;
 
 
     public License(long id, long organizationId, String productName, String licenseType) {
@@ -37,5 +38,13 @@ public class License {
 
     public void setLicenseType(String licenseType) {
         this.licenseType = licenseType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
