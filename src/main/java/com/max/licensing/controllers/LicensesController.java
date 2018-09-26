@@ -2,22 +2,21 @@ package com.max.licensing.controllers;
 
 
 import com.max.licensing.config.LicenseServiceConfig;
+import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "v1/organizations/{organizationId}/licenses")
 public class LicensesController {
-
-    private static final Logger LOG = Logger.getLogger(LicensesController.class);
 
     private final LicenseService licenseService;
 
@@ -30,40 +29,48 @@ public class LicensesController {
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.GET)
-    public License getLicenseById(@PathVariable("organizationId") long organizationId,
-                                  @PathVariable("licenseId") long licenseId) {
-        License singleLicense = licenseService.getByIds(organizationId, licenseId);
-        singleLicense.setDescription(config.getExampleProperty());
+    public ResponseEntity<License> getLicenseById(@PathVariable("organizationId") String organizationId,
+                                                  @PathVariable("licenseId") String licenseId) {
 
-        return singleLicense;
+        License license = licenseService.getByIds(licenseId);
+
+        if (license == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(license);
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.POST)
-    public String addNew(@PathVariable("organizationId") long organizationId,
-                         @PathVariable("licenseId") long licenseId) {
+    public ResponseEntity<String> addNew(@PathVariable("organizationId") String organizationId,
+                                         @PathVariable("licenseId") String licenseId,
+                                         @RequestBody LicenseDto licenseDto) {
 
-        //TODO:
-        licenseService.add(organizationId, licenseId, "", "");
+        License newLicense = new License();
+        newLicense.setId(licenseId);
+        newLicense.setOrganizationId(organizationId);
+        newLicense.setProductName(licenseDto.getProductName());
+        newLicense.setLicenseType(licenseDto.getLicenseType());
+        newLicense.setLicenseAllocated(licenseDto.getLicenseAllocated());
+        newLicense.setLicenseMax(licenseDto.getLicenseMax());
+        newLicense.setComment(config.getExampleProperty());
 
-        return "Created";
+        licenseService.add(newLicense);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.PUT)
-    public String update(@PathVariable("organizationId") long organizationId,
-                         @PathVariable("licenseId") long licenseId) {
+    public ResponseEntity<String> update(@PathVariable("organizationId") String organizationId,
+                                         @PathVariable("licenseId") String licenseId) {
 
-        //TODO:
-        licenseService.update(organizationId, licenseId, "", "");
-
-        return "Updated";
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String delete(@PathVariable("organizationId") long organizationId,
-                         @PathVariable("licenseId") long licenseId) {
+    public ResponseEntity<String> delete(@PathVariable("organizationId") String organizationId,
+                                         @PathVariable("licenseId") String licenseId) {
 
-        //TODO:
-        return licenseService.delete(organizationId, licenseId) ? "Deleted successfully" : "404 not found";
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 }

@@ -1,27 +1,50 @@
 package com.max.licensing.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "licenses")
 public class License {
 
-    private final long id;
-    private final long organizationId;
+    @Id
+    @Column(name = "license_id", nullable = false)
+    private String id;
+
+    @Column(name = "organization_id", nullable = false)
+    private String organizationId;
+
+    @Column(name = "product_name", nullable = false)
     private String productName;
+
+    @Column(name = "license_type", nullable = false)
     private String licenseType;
-    private String description;
 
+    @Column(name = "license_max", nullable = false)
+    private Integer licenseMax;
 
-    public License(long id, long organizationId, String productName, String licenseType) {
-        this.id = id;
-        this.organizationId = organizationId;
-        this.productName = productName;
-        this.licenseType = licenseType;
-    }
+    @Column(name = "license_allocated", nullable = false)
+    private Integer licenseAllocated;
 
-    public long getId() {
+    @Column(name = "comment")
+    private String comment;
+
+    public String getId() {
         return id;
     }
 
-    public long getOrganizationId() {
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getOrganizationId() {
         return organizationId;
+    }
+
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getProductName() {
@@ -40,11 +63,27 @@ public class License {
         this.licenseType = licenseType;
     }
 
-    public String getDescription() {
-        return description;
+    public Integer getLicenseMax() {
+        return licenseMax;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLicenseMax(Integer licenseMax) {
+        this.licenseMax = licenseMax;
+    }
+
+    public Integer getLicenseAllocated() {
+        return licenseAllocated;
+    }
+
+    public void setLicenseAllocated(Integer licenseAllocated) {
+        this.licenseAllocated = licenseAllocated;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
