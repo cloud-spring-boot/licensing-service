@@ -13,9 +13,12 @@ CREATE TABLE licenses (
 
 INSERT INTO licenses (license_id, organization_id, license_type, product_name, license_max, license_allocated)
 VALUES ('177', '1', 'user', 'customer-crm-co', 100, 5);
+
 INSERT INTO licenses (license_id, organization_id, license_type, product_name, license_max, license_allocated)
 VALUES ('178', '1', 'user', 'suitability-plus', 200, 189);
+
 INSERT INTO licenses (license_id, organization_id, license_type, product_name, license_max, license_allocated)
 VALUES ('188', '2', 'user', 'HR-PowerSuite', 100, 4);
+
 INSERT INTO licenses (license_id, organization_id, license_type, product_name, license_max, license_allocated)
 VALUES ('189', '2', 'core-prod', 'WildCat Application Gateway', 16, 16);

@@ -5,6 +5,9 @@ import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "v1/organizations/{organizationId}/licenses")
@@ -53,7 +58,9 @@ public class LicensesController {
         newLicense.setLicenseType(licenseDto.getLicenseType());
         newLicense.setLicenseAllocated(licenseDto.getLicenseAllocated());
         newLicense.setLicenseMax(licenseDto.getLicenseMax());
-        newLicense.setComment(config.getExampleProperty());
+
+        newLicense.setComment(config.getExampleProperty() + ": " +
+                makeRemoteCall("http://hello-service:6060/hello/maksym/stepanenko"));
 
         licenseService.add(newLicense);
 
@@ -65,12 +72,36 @@ public class LicensesController {
                                          @PathVariable("licenseId") String licenseId) {
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.DELETE)
     public ResponseEntity<String> delete(@PathVariable("organizationId") String organizationId,
                                          @PathVariable("licenseId") String licenseId) {
 
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        boolean wasDeleted = licenseService.delete(licenseId);
+
+        if (wasDeleted) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+
+    private static String makeRemoteCall(String url) {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            return response.body().string();
+        }
+        catch (IOException ioEx) {
+            throw new IllegalStateException(ioEx);
+        }
     }
 }
