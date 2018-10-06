@@ -1,2 +1,2 @@
-server:
-  port: 7070
+server.port: 7070
+flyway.schemas: my_app
