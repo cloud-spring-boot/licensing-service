@@ -1,2 +1,15 @@
-server.port: 7070
-flyway.schemas: my_app
+server:
+  port: ${PORT:7070}
+
+flyway:
+  schemas: my_app
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: ${EUREKASERVER_URI:http://localhost:8761/eureka}
