@@ -1,13 +1,11 @@
 package com.max.licensing.controllers;
 
 
+import com.max.licensing.client.HelloDiscoveryClient;
 import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping(value = "v1/organizations/{organizationId}/licenses")
 public class LicensesController {
@@ -27,10 +23,14 @@ public class LicensesController {
 
     private final LicenseServiceConfig config;
 
+    private final HelloDiscoveryClient helloDiscoveryClient;
+
     @Autowired
-    public LicensesController(LicenseServiceConfig config, LicenseService licenseService) {
+    public LicensesController(LicenseServiceConfig config, LicenseService licenseService,
+                              HelloDiscoveryClient helloDiscoveryClient) {
         this.config = config;
         this.licenseService = licenseService;
+        this.helloDiscoveryClient = helloDiscoveryClient;
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.GET)
@@ -59,8 +59,7 @@ public class LicensesController {
         newLicense.setLicenseAllocated(licenseDto.getLicenseAllocated());
         newLicense.setLicenseMax(licenseDto.getLicenseMax());
 
-        newLicense.setComment(config.getExampleProperty() + ": " +
-                makeRemoteCall("http://hello-service:6060/hello/maksym/stepanenko"));
+        newLicense.setComment(helloDiscoveryClient.getHelloMessage("olesia", "boyko").getMessage());
 
         licenseService.add(newLicense);
 
@@ -86,22 +85,5 @@ public class LicensesController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-
-
-    private static String makeRemoteCall(String url) {
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        try {
-            Response response = client.newCall(request).execute();
-            return response.body().string();
-        }
-        catch (IOException ioEx) {
-            throw new IllegalStateException(ioEx);
-        }
     }
 }
