@@ -16,3 +16,7 @@
 
 ## Copied from
 `https://github.com/carnellj/spmia-chapter1`
+
+## Bugs discovered
+
+1. Feign client fails on first call (https://github.com/Netflix/ribbon/issues/339)

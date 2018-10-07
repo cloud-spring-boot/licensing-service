@@ -11,16 +11,9 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableEurekaClient
-//@EnableDiscoveryClient
-//@EnableFeignClients
+@EnableFeignClients
 public class LicensingApplication {
     public static void main(String[] args) {
         SpringApplication.run(LicensingApplication.class, args);
-    }
-
-    @Bean
-    @LoadBalanced
-    public RestTemplate getRestTemplate(){
-        return new RestTemplate();
     }
 }
