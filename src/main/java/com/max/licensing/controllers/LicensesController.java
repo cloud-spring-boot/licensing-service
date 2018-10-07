@@ -59,7 +59,7 @@ public class LicensesController {
         newLicense.setLicenseAllocated(licenseDto.getLicenseAllocated());
         newLicense.setLicenseMax(licenseDto.getLicenseMax());
 
-        newLicense.setComment(helloDiscoveryClient.getHelloMessage("olesia", "boyko").getMessage());
+        newLicense.setComment(helloDiscoveryClient.getHelloMessage("maksym", "stepanenko").getMessage());
 
         licenseService.add(newLicense);
 
