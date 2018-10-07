@@ -1,12 +1,13 @@
 package com.max.licensing.controllers;
 
 
-import com.max.licensing.client.HelloDiscoveryClient;
+import com.max.licensing.client.MessageDto;
 import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping(value = "v1/organizations/{organizationId}/licenses")
@@ -23,14 +25,14 @@ public class LicensesController {
 
     private final LicenseServiceConfig config;
 
-    private final HelloDiscoveryClient helloDiscoveryClient;
+    private final RestTemplate restTemplate;
 
     @Autowired
     public LicensesController(LicenseServiceConfig config, LicenseService licenseService,
-                              HelloDiscoveryClient helloDiscoveryClient) {
+                              RestTemplate restTemplate) {
         this.config = config;
         this.licenseService = licenseService;
-        this.helloDiscoveryClient = helloDiscoveryClient;
+        this.restTemplate = restTemplate;
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.GET)
@@ -60,7 +62,7 @@ public class LicensesController {
         newLicense.setLicenseMax(licenseDto.getLicenseMax());
 
         newLicense.setComment(config.getExampleProperty() + ":" +
-                helloDiscoveryClient.getHelloMessage("maksym", "stepanenko").getMessage());
+                getMessageFromHelloService("maksym", "stepanenko").getMessage());
 
         licenseService.add(newLicense);
 
@@ -86,5 +88,12 @@ public class LicensesController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    private MessageDto getMessageFromHelloService(String firstName, String lastName) {
+        return restTemplate.exchange(
+                String.format("http://hello-service/hello/%s/%s", firstName, lastName),
+                HttpMethod.GET, null, MessageDto.class).
+                getBody();
     }
 }
