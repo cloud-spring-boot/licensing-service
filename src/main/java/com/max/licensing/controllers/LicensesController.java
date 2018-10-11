@@ -1,7 +1,7 @@
 package com.max.licensing.controllers;
 
 
-import com.max.licensing.client.OrganizationClient;
+import com.max.licensing.client.organization.OrganizationClient;
 import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
@@ -45,21 +45,7 @@ public class LicensesController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        String organizationName;
-
-        try {
-            organizationName = organizationClient.getOrganization(organizationId).getBody().getName();
-        }
-        catch (HystrixRuntimeException ex) {
-            if (ex.getCause() instanceof FeignException) {
-                organizationName = "UNDEFINED: code =" + ((FeignException) ex.getCause()).status();
-            }
-            else {
-                organizationName = ex.getMessage();
-            }
-        }
-
-        license.setOrganizationName(organizationName);
+        license.setOrganizationName(organizationClient.getOrganization(organizationId).getBody().getName());
 
         return ResponseEntity.status(HttpStatus.OK).body(license);
     }

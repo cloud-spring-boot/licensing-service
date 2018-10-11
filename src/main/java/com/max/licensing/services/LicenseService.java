@@ -3,6 +3,7 @@ package com.max.licensing.services;
 import com.max.licensing.model.License;
 import com.max.licensing.repository.LicenseRepository;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -19,7 +20,19 @@ public class LicenseService {
         this.licenseRepository = licenseRepository;
     }
 
-    @HystrixCommand(fallbackMethod = "getByIdsFallback")
+    /**
+     * coreSize = (requests per second at peak when the service is healthy * 99th percentile latency in seconds) +
+     * small amount of extra threads for overhead
+     *
+     * @param licenseId
+     * @return
+     */
+    @HystrixCommand(fallbackMethod = "getByIdsFallback",
+            threadPoolKey = "getLicenseByIdThreadPool",
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize", value = "30"),
+                    @HystrixProperty(name = "maxQueueSize", value = "10")
+            })
     public License getByIds(String licenseId) {
 
         simulateRandomDelay();

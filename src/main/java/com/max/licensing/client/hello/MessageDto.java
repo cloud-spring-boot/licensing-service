@@ -1,4 +1,4 @@
-package com.max.licensing.client;
+package com.max.licensing.client.hello;
 
 public class MessageDto {
 

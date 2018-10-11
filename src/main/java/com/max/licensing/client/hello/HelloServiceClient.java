@@ -1,4 +1,4 @@
-package com.max.licensing.client;
+package com.max.licensing.client.hello;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
