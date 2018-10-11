@@ -2,11 +2,16 @@ package com.max.licensing.services;
 
 import com.max.licensing.model.License;
 import com.max.licensing.repository.LicenseRepository;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.stereotype.Service;
+
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class LicenseService {
 
+    private static final Random RAND = new Random();
 
     private final LicenseRepository licenseRepository;
 
@@ -14,8 +19,26 @@ public class LicenseService {
         this.licenseRepository = licenseRepository;
     }
 
+    @HystrixCommand(fallbackMethod = "getByIdsFallback")
     public License getByIds(String licenseId) {
+
+        simulateRandomDelay();
+
         return licenseRepository.findOne(licenseId);
+    }
+
+    @SuppressWarnings("unused")
+    private License getByIdsFallback(String licenseId) {
+        License license = new License();
+        license.setId(licenseId);
+        license.setOrganizationId("-1");
+        license.setProductName("Undefined");
+        license.setLicenseType("Unknown");
+        license.setLicenseMax(-1);
+        license.setLicenseAllocated(-1);
+        license.setComment("No comment");
+
+        return license;
     }
 
     public boolean delete(String licenseId) {
@@ -33,6 +56,19 @@ public class LicenseService {
 
     public License add(License newLicense) {
         return licenseRepository.save(newLicense);
+    }
+
+    private static void simulateRandomDelay() {
+
+        if (RAND.nextInt(3) == 0) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            }
+            catch (InterruptedException interEx) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Sleep was interrupted");
+            }
+        }
     }
 
 
