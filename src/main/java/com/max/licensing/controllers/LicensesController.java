@@ -6,8 +6,7 @@ import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
-import feign.FeignException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "v1/organizations/{organizationId}/licenses")
 public class LicensesController {
+
+    private static final Logger LOG = Logger.getLogger(LicensesController.class);
 
     private final LicenseService licenseService;
 
@@ -38,6 +39,8 @@ public class LicensesController {
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.GET)
     public ResponseEntity<License> getLicenseById(@PathVariable("organizationId") String organizationId,
                                                   @PathVariable("licenseId") String licenseId) {
+
+        LOG.info("organizationId: " + organizationId);
 
         License license = licenseService.getByIds(licenseId);
 

@@ -1,18 +1,32 @@
 package com.max.licensing.services;
 
+import com.max.licensing.controllers.LicensesController;
 import com.max.licensing.model.License;
 import com.max.licensing.repository.LicenseRepository;
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+@DefaultProperties(threadPoolKey = "licenseServiceThreadPool",
+        threadPoolProperties = {
+                @HystrixProperty(name = "coreSize", value = "30"),
+                @HystrixProperty(name = "maxQueueSize", value = "10")
+        }
+//        commandProperties = {
+//                @HystrixProperty(
+//                        name = "execution.isolation.strategy", value = "SEMAPHORE")}
+)
 @Service
 public class LicenseService {
 
     private static final Random RAND = new Random();
+
+    private static final Logger LOG = Logger.getLogger(LicensesController.class);
 
     private final LicenseRepository licenseRepository;
 
@@ -27,12 +41,7 @@ public class LicenseService {
      * @param licenseId
      * @return
      */
-    @HystrixCommand(fallbackMethod = "getByIdsFallback",
-            threadPoolKey = "getLicenseByIdThreadPool",
-            threadPoolProperties = {
-                    @HystrixProperty(name = "coreSize", value = "30"),
-                    @HystrixProperty(name = "maxQueueSize", value = "10")
-            })
+    @HystrixCommand(fallbackMethod = "getByIdsFallback")
     public License getByIds(String licenseId) {
 
         simulateRandomDelay();
@@ -54,6 +63,7 @@ public class LicenseService {
         return license;
     }
 
+    @HystrixCommand
     public boolean delete(String licenseId) {
         if (licenseRepository.exists(licenseId)) {
             licenseRepository.delete(licenseId);
@@ -63,10 +73,12 @@ public class LicenseService {
         return false;
     }
 
+    @HystrixCommand
     public void update(String licenseId, String productName, String licenseType) {
         //TODO:
     }
 
+    @HystrixCommand
     public License add(License newLicense) {
         return licenseRepository.save(newLicense);
     }
@@ -83,6 +95,5 @@ public class LicenseService {
             }
         }
     }
-
 
 }
