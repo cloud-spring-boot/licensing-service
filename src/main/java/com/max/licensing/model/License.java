@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "licenses")
@@ -30,6 +31,9 @@ public class License {
 
     @Column(name = "comment")
     private String comment;
+
+    @Transient
+    private String organizationName;
 
     public String getId() {
         return id;
@@ -85,5 +89,13 @@ public class License {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getOrganizationName() {
+        return organizationName;
+    }
+
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
     }
 }

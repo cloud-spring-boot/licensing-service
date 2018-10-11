@@ -1,11 +1,13 @@
 package com.max.licensing.controllers;
 
 
-import com.max.licensing.client.HelloServiceClient;
+import com.max.licensing.client.OrganizationClient;
 import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +25,14 @@ public class LicensesController {
 
     private final LicenseServiceConfig config;
 
-    private final HelloServiceClient helloServiceClient;
+    private final OrganizationClient organizationClient;
 
     @Autowired
     public LicensesController(LicenseServiceConfig config, LicenseService licenseService,
-                              HelloServiceClient helloServiceClient) {
+                              OrganizationClient organizationClient) {
         this.config = config;
         this.licenseService = licenseService;
-        this.helloServiceClient = helloServiceClient;
+        this.organizationClient = organizationClient;
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.GET)
@@ -42,6 +44,22 @@ public class LicensesController {
         if (license == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
+        String organizationName;
+
+        try {
+            organizationName = organizationClient.getOrganization(organizationId).getBody().getName();
+        }
+        catch (HystrixRuntimeException ex) {
+            if (ex.getCause() instanceof FeignException) {
+                organizationName = "UNDEFINED: code =" + ((FeignException) ex.getCause()).status();
+            }
+            else {
+                organizationName = ex.getMessage();
+            }
+        }
+
+        license.setOrganizationName(organizationName);
 
         return ResponseEntity.status(HttpStatus.OK).body(license);
     }
@@ -59,8 +77,7 @@ public class LicensesController {
         newLicense.setLicenseAllocated(licenseDto.getLicenseAllocated());
         newLicense.setLicenseMax(licenseDto.getLicenseMax());
 
-        newLicense.setComment(config.getExampleProperty() + ":" +
-                helloServiceClient.getHelloMessage("maksym", "stepanenko").getMessage());
+        newLicense.setComment("Comment: " + config.getExampleProperty());
 
         licenseService.add(newLicense);
 
