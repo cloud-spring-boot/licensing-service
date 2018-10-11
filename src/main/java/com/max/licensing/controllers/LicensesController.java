@@ -6,6 +6,7 @@ import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
+import com.max.licensing.util.CorrelationIdHolder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class LicensesController {
     public ResponseEntity<License> getLicenseById(@PathVariable("organizationId") String organizationId,
                                                   @PathVariable("licenseId") String licenseId) {
 
-        LOG.info("organizationId: " + organizationId);
+        LOG.info("correlationId: " + CorrelationIdHolder.getId());
 
         License license = licenseService.getByIds(licenseId);
 
