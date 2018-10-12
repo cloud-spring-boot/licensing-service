@@ -15,4 +15,8 @@ public final class CorrelationIdHolder {
         return CORRELATION_ID.get();
     }
 
+    public static void clear(){
+        CORRELATION_ID.remove();
+    }
+
 }

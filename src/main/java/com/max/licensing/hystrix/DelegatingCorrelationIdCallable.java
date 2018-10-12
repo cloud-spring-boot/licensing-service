@@ -22,6 +22,7 @@ public class DelegatingCorrelationIdCallable<V> implements Callable<V> {
         }
         finally {
             this.correlationId = null;
+            CorrelationIdHolder.clear();
         }
     }
 }
