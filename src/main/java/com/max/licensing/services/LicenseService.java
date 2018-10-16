@@ -1,9 +1,10 @@
 package com.max.licensing.services;
 
+import com.max.correlation.UserContextHolder;
 import com.max.licensing.controllers.LicensesController;
 import com.max.licensing.model.License;
 import com.max.licensing.repository.LicenseRepository;
-import com.max.licensing.util.UserContextHolder;
+
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;

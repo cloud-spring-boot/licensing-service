@@ -1,6 +1,7 @@
 package com.max.licensing.hystrix;
 
-import com.max.licensing.util.UserContextHolder;
+
+import com.max.correlation.UserContextHolder;
 import com.netflix.hystrix.HystrixThreadPoolKey;
 import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestVariable;

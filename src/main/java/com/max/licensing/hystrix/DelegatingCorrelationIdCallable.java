@@ -1,7 +1,9 @@
 package com.max.licensing.hystrix;
 
-import com.max.licensing.util.UserContext;
-import com.max.licensing.util.UserContextHolder;
+
+
+import com.max.correlation.UserContext;
+import com.max.correlation.UserContextHolder;
 
 import java.util.concurrent.Callable;
 
