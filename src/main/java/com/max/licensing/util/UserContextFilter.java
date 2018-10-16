@@ -1,6 +1,7 @@
 package com.max.licensing.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.Filter;
@@ -14,9 +15,9 @@ import java.io.IOException;
 
 
 @Component
-public class CorrelationIdFilter implements Filter {
+public class UserContextFilter implements Filter {
 
-    private static final Logger LOG = Logger.getLogger(CorrelationIdFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserContextFilter.class);
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
@@ -24,23 +25,21 @@ public class CorrelationIdFilter implements Filter {
 
         HttpServletRequest httpReq = (HttpServletRequest) req;
 
-        String correlationIdValue = httpReq.getHeader("Correlation-Id");
+        final UserContext userContext = new UserContext(httpReq.getHeader(UserContext.CORRELATION_ID_HEADER));
+        UserContextHolder.setUserContext(userContext);
 
-        LOG.info("correlationId: " + correlationIdValue);
-
-        CorrelationIdHolder.setId(correlationIdValue);
+        LOG.info("Request with Correlation-Id: {}", userContext.getCorrelationId());
 
         chain.doFilter(req, resp);
-
     }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        // not implemented
     }
 
     @Override
     public void destroy() {
-
+        // not implemented
     }
 }

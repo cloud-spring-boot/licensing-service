@@ -1,28 +1,29 @@
 package com.max.licensing.hystrix;
 
-import com.max.licensing.util.CorrelationIdHolder;
+import com.max.licensing.util.UserContext;
+import com.max.licensing.util.UserContextHolder;
 
 import java.util.concurrent.Callable;
 
 public class DelegatingCorrelationIdCallable<V> implements Callable<V> {
 
     private final Callable<V> delegate;
-    private String correlationId;
+    private UserContext userContext;
 
-    DelegatingCorrelationIdCallable(Callable<V> delegate, String correlationId) {
+    DelegatingCorrelationIdCallable(Callable<V> delegate, UserContext userContext) {
         this.delegate = delegate;
-        this.correlationId = correlationId;
+        this.userContext = userContext;
     }
 
     public V call() throws Exception {
-        CorrelationIdHolder.setId(correlationId);
+        UserContextHolder.setUserContext(userContext);
 
         try {
             return delegate.call();
         }
         finally {
-            this.correlationId = null;
-            CorrelationIdHolder.clear();
+            this.userContext = null;
+            UserContextHolder.clear();
         }
     }
 }

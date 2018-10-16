@@ -1,12 +1,11 @@
 package com.max.licensing.hystrix;
 
-import com.max.licensing.util.CorrelationIdHolder;
+import com.max.licensing.util.UserContextHolder;
 import com.netflix.hystrix.HystrixThreadPoolKey;
 import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestVariable;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestVariableLifecycle;
 import com.netflix.hystrix.strategy.properties.HystrixProperty;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -49,7 +48,8 @@ public class ThreadLocalAwareStrategy extends HystrixConcurrencyStrategy {
     @Override
     public <T> Callable<T> wrapCallable(Callable<T> callable) {
         return existingConcurrencyStrategy != null ? existingConcurrencyStrategy
-                .wrapCallable(new DelegatingCorrelationIdCallable<T>(callable, CorrelationIdHolder.getId()))
-                : super.wrapCallable(new DelegatingCorrelationIdCallable<T>(callable, CorrelationIdHolder.getId()));
+                .wrapCallable(new DelegatingCorrelationIdCallable<T>(callable, UserContextHolder.getUserContext()))
+                : super.wrapCallable(
+                new DelegatingCorrelationIdCallable<T>(callable, UserContextHolder.getUserContext()));
     }
 }
