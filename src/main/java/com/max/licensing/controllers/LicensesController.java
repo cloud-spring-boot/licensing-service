@@ -6,7 +6,8 @@ import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
 import com.max.licensing.services.LicenseService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "v1/organizations/{organizationId}/licenses")
 public class LicensesController {
 
-    private static final Logger LOG = Logger.getLogger(LicensesController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LicensesController.class);
 
     private final LicenseService licenseService;
 
