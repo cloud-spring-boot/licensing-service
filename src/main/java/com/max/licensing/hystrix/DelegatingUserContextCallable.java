@@ -7,12 +7,12 @@ import com.max.correlation.UserContextHolder;
 
 import java.util.concurrent.Callable;
 
-public class DelegatingCorrelationIdCallable<V> implements Callable<V> {
+public class DelegatingUserContextCallable<V> implements Callable<V> {
 
     private final Callable<V> delegate;
     private UserContext userContext;
 
-    DelegatingCorrelationIdCallable(Callable<V> delegate, UserContext userContext) {
+    DelegatingUserContextCallable(Callable<V> delegate, UserContext userContext) {
         this.delegate = delegate;
         this.userContext = userContext;
     }

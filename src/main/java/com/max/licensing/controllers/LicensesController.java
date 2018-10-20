@@ -41,6 +41,8 @@ public class LicensesController {
     public ResponseEntity<License> getLicenseById(@PathVariable("organizationId") String organizationId,
                                                   @PathVariable("licenseId") String licenseId) {
 
+        LOG.info("getLicenseById called");
+
         License license = licenseService.getByIds(licenseId);
 
         if (license == null) {

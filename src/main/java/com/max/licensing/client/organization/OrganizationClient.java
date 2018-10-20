@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Primary
-@FeignClient(value = "organization-service", fallback = OrganizationClientFallback.class)
+@FeignClient(value = "zuul", fallback = OrganizationClientFallback.class)
 public interface OrganizationClient {
 
-    @RequestMapping(value = "v1/organizations/{organizationId}", method = RequestMethod.GET)
+    @RequestMapping(value = "api/organization/v1/organizations/{organizationId}", method = RequestMethod.GET)
     ResponseEntity<OrganizationDto> getOrganization(@PathVariable("organizationId") String organizationId);
 
 }
