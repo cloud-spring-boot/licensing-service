@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 echo "********************************************************"
 echo "Waiting for the Eureka to start on port $EUREKASERVER_PORT"
 echo "********************************************************"
@@ -16,6 +16,9 @@ echo "Waiting for the database server to start on port $DATABASESERVER_PORT"
 echo "********************************************************"
 while ! `nc -z database $DB_PORT`; do sleep 3; done
 echo ">>>>>>>>>>>> Database Server has started"
+
+nohup tcpdump -A -s 0 'tcp port 8080 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)' \
+-w /usr/local/licensing-service/pcap/licensing.pcap &
 
 echo "********************************************************"
 echo "Starting licensing-service "
