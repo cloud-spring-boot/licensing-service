@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(value = "zuul", fallback = OrganizationClientFallback.class)
 public interface OrganizationClient {
 
+    /**
+     * Making a call to organization-service through Zuul as a proxy.
+     */
     @RequestMapping(value = "api/organization/v1/organizations/{organizationId}", method = RequestMethod.GET)
     ResponseEntity<OrganizationDto> getOrganization(@PathVariable("organizationId") String organizationId);
 
