@@ -1,5 +1,7 @@
 package com.max.licensing.security;
 
+import com.max.licensing.config.LicenseServiceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -11,13 +13,18 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @Configuration
 public class JWTTokenStoreConfig {
 
-    //JWT
+    private final LicenseServiceConfig serviceConfig;
+
+    @Autowired
+    public JWTTokenStoreConfig(LicenseServiceConfig serviceConfig) {
+        this.serviceConfig = serviceConfig;
+    }
+
     @Bean
     public TokenStore tokenStore() {
         return new JwtTokenStore(jwtAccessTokenConverter());
     }
 
-    //JWT
     @Bean
     @Primary
     public DefaultTokenServices tokenServices() {
@@ -27,11 +34,10 @@ public class JWTTokenStoreConfig {
         return defaultTokenServices;
     }
 
-    //JWT
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("345345fsdfsf5345");
+        converter.setSigningKey(serviceConfig.getJwtSigningKey());
         return converter;
     }
 
