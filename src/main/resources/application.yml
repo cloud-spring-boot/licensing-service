@@ -1,6 +1,19 @@
 server:
   port: ${PORT:8080}
 
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: orgChangeTopic
+          content-type: application/json
+          group: licensingGroup
+      kafka:
+        binder:
+          zkNodes: ${ZK_SERVER_URI:localhost}
+          brokers: ${KAFKA_SERVER_URI:localhost}
+
 flyway:
   schemas: my_app
 

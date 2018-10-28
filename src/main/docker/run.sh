@@ -17,6 +17,12 @@ echo "********************************************************"
 while ! `nc -z database $DB_PORT`; do sleep 3; done
 echo ">>>>>>>>>>>> Database Server has started"
 
+echo "********************************************************"
+echo "Waiting for the kafka server to start on port  $KAFKA_SERVER_PORT"
+echo "********************************************************"
+while ! `nc -z kafka $KAFKA_SERVER_PORT`; do sleep 10; done
+echo "******* Kafka Server has started"
+
 ########################################################################################################################
 # Monitor HTTP traffic on port 8080 including request and response headers and message body.
 ########################################################################################################################
@@ -32,4 +38,6 @@ java \
 -Deureka.client.serviceUrl.defaultZone=$EUREKASERVER_URI \
 -Dspring.cloud.config.uri=$CONFIGSERVER_URI \
 -Dspring.profiles.active=$PROFILE \
+-Dspring.cloud.stream.kafka.binder.zkNodes=$KAFKA_SERVER_URI \
+-Dspring.cloud.stream.kafka.binder.brokers=$ZK_SERVER_URI \
 -jar /usr/local/licensing-service/@project.build.finalName@.jar
