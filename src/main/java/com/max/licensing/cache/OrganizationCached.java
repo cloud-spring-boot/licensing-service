@@ -1,4 +1,4 @@
-package com.max.licensing.client.organization;
+package com.max.licensing.cache;
 
 import org.springframework.data.redis.core.RedisHash;
 

@@ -1,5 +1,6 @@
 package com.max.licensing;
 
+import com.max.licensing.cache.OrganizationCacheRepository;
 import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.events.OrgChangeEventDto;
 import org.slf4j.Logger;
@@ -51,6 +52,9 @@ public class LicensingApplication {
         return template;
     }
 
+    @Autowired
+    private OrganizationCacheRepository organizationCacheRepository;
+
     @StreamListener(Sink.INPUT)
     public void orgChangeEventListener(OrgChangeEventDto orgChangeEventDto) {
 
@@ -58,6 +62,17 @@ public class LicensingApplication {
 
         LOG.info("Event received {} for organizationId {}",
                 orgChangeEventDto.getAction(), orgChangeEventDto.getOrganizationId());
+
+        if ("DELETE".equals(orgChangeEventDto.getAction())) {
+            try {
+                organizationCacheRepository.delete(orgChangeEventDto.getOrganizationId());
+            }
+            catch (Exception ex) {
+                LOG.error("Can't delete organization with id " + orgChangeEventDto.getOrganizationId() +
+                        " from Redis cache", ex);
+            }
+        }
+
     }
 
 }
