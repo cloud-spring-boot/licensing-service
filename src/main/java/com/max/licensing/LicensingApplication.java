@@ -1,5 +1,7 @@
 package com.max.licensing;
 
+import com.max.licensing.config.LicenseServiceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -21,12 +23,14 @@ public class LicensingApplication {
         SpringApplication.run(LicensingApplication.class, args);
     }
 
+    @Autowired
+    private LicenseServiceConfig config;
+
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         JedisConnectionFactory connectionFactory = new JedisConnectionFactory();
-        // TODO: make redis port and hostname configurable through properties
-        connectionFactory.setHostName("redis");
-        connectionFactory.setPort(6379);
+        connectionFactory.setHostName(config.getRedisHost());
+        connectionFactory.setPort(config.getRedisPort());
         return connectionFactory;
     }
 
