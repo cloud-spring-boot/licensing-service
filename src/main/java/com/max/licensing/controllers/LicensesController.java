@@ -1,7 +1,7 @@
 package com.max.licensing.controllers;
 
 
-import com.max.licensing.client.organization.OrganizationClient;
+import com.max.licensing.client.organization.OrganizationDataRetriever;
 import com.max.licensing.config.LicenseServiceConfig;
 import com.max.licensing.dto.LicenseDto;
 import com.max.licensing.model.License;
@@ -32,14 +32,14 @@ public class LicensesController {
 
     private final LicenseServiceConfig config;
 
-    private final OrganizationClient organizationClient;
+    private final OrganizationDataRetriever organizationDataRetriever;
 
     @Autowired
     public LicensesController(LicenseServiceConfig config, LicenseService licenseService,
-                              OrganizationClient organizationClient) {
+                              OrganizationDataRetriever organizationDataRetriever) {
         this.config = config;
         this.licenseService = licenseService;
-        this.organizationClient = organizationClient;
+        this.organizationDataRetriever = organizationDataRetriever;
     }
 
     @RequestMapping(value = "/{licenseId}", method = RequestMethod.GET)
@@ -54,7 +54,7 @@ public class LicensesController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        license.setOrganizationName(organizationClient.getOrganization(organizationId).getBody().getName());
+        license.setOrganizationName(organizationDataRetriever.getOrganization(organizationId).getName());
 
         return ResponseEntity.status(HttpStatus.OK).body(license);
     }

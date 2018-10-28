@@ -23,4 +23,9 @@ public class OrganizationDto {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "OrganizationDto(" + id + ", " + name + ")";
+    }
+
 }
