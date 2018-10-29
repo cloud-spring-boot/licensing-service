@@ -1,6 +1,5 @@
 package com.max.licensing.client.organization;
 
-import com.max.licensing.client.OrganizationDto;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;

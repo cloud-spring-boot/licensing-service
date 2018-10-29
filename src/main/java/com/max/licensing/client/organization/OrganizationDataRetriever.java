@@ -3,7 +3,6 @@ package com.max.licensing.client.organization;
 
 import com.max.licensing.cache.OrganizationCacheRepository;
 import com.max.licensing.cache.OrganizationCached;
-import com.max.licensing.client.OrganizationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
