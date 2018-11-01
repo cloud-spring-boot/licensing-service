@@ -1,10 +1,8 @@
 package com.max.licensing.services;
 
-import com.max.correlation.UserContextHolder;
 import com.max.licensing.controllers.LicensesController;
 import com.max.licensing.model.License;
 import com.max.licensing.repository.LicenseRepository;
-
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
@@ -46,7 +44,7 @@ public class LicenseService {
     @HystrixCommand(fallbackMethod = "getByIdsFallback")
     public License getByIds(String licenseId) {
 
-        LOG.info("getByIds Correlation-Id: " + UserContextHolder.getUserContext().getCorrelationId());
+        LOG.info("getByIds called");
 
 //        simulateRandomDelay();
 

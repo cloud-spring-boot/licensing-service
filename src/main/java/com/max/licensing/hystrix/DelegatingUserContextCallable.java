@@ -1,7 +1,5 @@
 package com.max.licensing.hystrix;
 
-
-
 import com.max.correlation.UserContext;
 import com.max.correlation.UserContextHolder;
 
