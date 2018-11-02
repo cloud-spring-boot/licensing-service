@@ -7,10 +7,11 @@ import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.apache.log4j.Logger;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @DefaultProperties(threadPoolKey = "licenseServiceThreadPool",
         threadPoolProperties = {
@@ -30,8 +31,11 @@ public class LicenseService {
 
     private final LicenseRepository licenseRepository;
 
-    public LicenseService(LicenseRepository licenseRepository) {
+    private final Tracer tracer;
+
+    public LicenseService(LicenseRepository licenseRepository, Tracer tracer) {
         this.licenseRepository = licenseRepository;
+        this.tracer = tracer;
     }
 
     /**
@@ -46,9 +50,16 @@ public class LicenseService {
 
         LOG.info("getByIds called");
 
-//        simulateRandomDelay();
+        Span readFromDbSpan = tracer.createSpan("get_license_from_db");
 
-        return licenseRepository.findOne(licenseId);
+        try {
+            return licenseRepository.findOne(licenseId);
+        }
+        finally {
+            readFromDbSpan.tag("peer.service", "postgresql");
+            readFromDbSpan.logEvent(Span.CLIENT_RECV);
+            tracer.close(readFromDbSpan);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -83,19 +94,6 @@ public class LicenseService {
     @HystrixCommand
     public License add(License newLicense) {
         return licenseRepository.save(newLicense);
-    }
-
-    private static void simulateRandomDelay() {
-
-        if (RAND.nextInt(3) == 0) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            }
-            catch (InterruptedException interEx) {
-                Thread.currentThread().interrupt();
-                throw new IllegalStateException("Sleep was interrupted");
-            }
-        }
     }
 
 }
