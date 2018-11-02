@@ -71,12 +71,20 @@ public class OrganizationDataRetriever {
     }
 
     private void storeInCache(OrganizationDto orgFromRemoteCall) {
+
+        Span storeInRedisSpan = tracer.createSpan("save_in_redis");
+
         try {
             organizationCacheRepository.save(new OrganizationCached(orgFromRemoteCall.getId(), orgFromRemoteCall.getName()));
         }
         catch (Exception ex) {
             // handle all Redis exceptions if any
             LOG.error("Can't store data in Redis cache");
+        }
+        finally {
+            storeInRedisSpan.tag("peer.service", "redis");
+            storeInRedisSpan.logEvent(Span.CLIENT_RECV);
+            tracer.close(storeInRedisSpan);
         }
     }
 }
