@@ -2,6 +2,9 @@ server:
   port: ${PORT:8080}
 
 spring:
+  sleuth.sampler.percentage: 1
+  zipkin:
+    baseUrl: ${ZIPKIN_SERVER_URI:localhost:9411}
   cloud:
     stream:
       bindings:
