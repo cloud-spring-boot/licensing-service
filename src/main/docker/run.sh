@@ -40,4 +40,5 @@ java \
 -Dspring.profiles.active=$PROFILE \
 -Dspring.cloud.stream.kafka.binder.zkNodes=$KAFKA_SERVER_URI \
 -Dspring.cloud.stream.kafka.binder.brokers=$ZK_SERVER_URI \
+-agentpath:/usr/local/licensing-service/async-profiler/build/libasyncProfiler.so=start,svg,file=/usr/local/licensing-service/pcap/licensing-service-profile.svg \
 -jar /usr/local/licensing-service/@project.build.finalName@.jar
